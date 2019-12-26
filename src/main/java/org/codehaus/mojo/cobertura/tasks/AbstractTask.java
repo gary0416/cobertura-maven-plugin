@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -123,26 +123,26 @@ public abstract class AbstractTask
         return cpBuffer.toString();
     }
 
-    private String getLog4jConfigFile()
+    private String getLogbackConfigFile()
     {
-        String resourceName = "cobertura-plugin/log4j-info.properties";
+        String resourceName = "cobertura-plugin/logback-info.xml";
         if ( getLog().isDebugEnabled() )
         {
-            resourceName = "cobertura-plugin/log4j-debug.properties";
+            resourceName = "cobertura-plugin/logback-debug.xml";
         }
         if ( quiet )
         {
-            resourceName = "cobertura-plugin/log4j-error.properties";
+            resourceName = "cobertura-plugin/logback-error.xml";
         }
 
         String path = null;
         try
         {
-            File log4jconfigFile = File.createTempFile( "log4j", "config.properties" );
-            URL log4jurl = this.getClass().getClassLoader().getResource( resourceName );
-            FileUtils.copyURLToFile( log4jurl, log4jconfigFile );
-            log4jconfigFile.deleteOnExit();
-            path = log4jconfigFile.toURL().toExternalForm();
+            File logbackConfigFile = File.createTempFile( "logback", "config.xml" );
+            URL logbackUrl = this.getClass().getClassLoader().getResource( resourceName );
+            FileUtils.copyURLToFile( logbackUrl, logbackConfigFile );
+            logbackConfigFile.deleteOnExit();
+            path = logbackConfigFile.toURL().toExternalForm();
         }
         catch ( MalformedURLException e )
         {
@@ -178,10 +178,10 @@ public abstract class AbstractTask
         cl.setExecutable( java.getAbsolutePath() );
         cl.addEnvironment( "CLASSPATH", createClasspath() );
 
-        String log4jConfig = getLog4jConfigFile();
-        if ( log4jConfig != null )
+        String logbackConfig = getLogbackConfigFile();
+        if ( logbackConfig != null )
         {
-            cl.createArg().setValue( "-Dlog4j.configuration=" + log4jConfig );
+            cl.createArg().setValue( "-Dlogback.configurationFile=" + logbackConfig );
         }
 
         cl.createArg().setValue( "-Xmx" + maxmem );
